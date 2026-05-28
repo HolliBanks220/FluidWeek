@@ -47,7 +47,6 @@ function hexToSoft(hex) {
   } catch(e) { return "#F5F5F5"; }
 }
 
-// localStorage helpers
 function lsGet(key, fallback) {
   try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
   catch(e) { return fallback; }
@@ -58,15 +57,15 @@ function lsSet(key, value) {
 
 let uid = 200;
 
-export default function FluidWeek() {
-  const [config, setConfig]         = useState(() => lsGet("fw-config", PRESETS.freelancer));
+export default function FluidWeekPro() {
+  const [config, setConfig]         = useState(() => lsGet("fwpro-config", PRESETS.freelancer));
   const [editing, setEditing]       = useState(false);
-  const [draft, setDraft]           = useState(() => lsGet("fw-config", PRESETS.freelancer));
-  const [items, setItems]           = useState(() => { const s = lsGet("fw-items", []); uid = s.length ? Math.max(200,...s.map(i=>i.id))+1 : 200; return s; });
+  const [draft, setDraft]           = useState(() => lsGet("fwpro-config", PRESETS.freelancer));
+  const [items, setItems]           = useState(() => { const s = lsGet("fwpro-items", []); uid = s.length ? Math.max(200,...s.map(i=>i.id))+1 : 200; return s; });
   const [tab, setTab]               = useState("week");
   const [dragging, setDragging]     = useState(null);
   const [dragOver, setDragOver]     = useState(null);
-  const [log, setLog]               = useState(() => lsGet("fw-log", []));
+  const [log, setLog]               = useState(() => lsGet("fwpro-log", []));
   const [adding, setAdding]         = useState(false);
   const [form, setForm]             = useState({ title:"", day:0, priority:"high", type:"" });
   const [mounted, setMounted]       = useState(false);
@@ -81,9 +80,9 @@ export default function FluidWeek() {
     return () => document.head.removeChild(style);
   },[]);
 
-  useEffect(()=>{ if(mounted) lsSet("fw-items", items); },[items, mounted]);
-  useEffect(()=>{ if(mounted) lsSet("fw-config", config); },[config, mounted]);
-  useEffect(()=>{ if(mounted) lsSet("fw-log", log); },[log, mounted]);
+  useEffect(()=>{ if(mounted) lsSet("fwpro-items", items); },[items,mounted]);
+  useEffect(()=>{ if(mounted) lsSet("fwpro-config", config); },[config,mounted]);
+  useEffect(()=>{ if(mounted) lsSet("fwpro-log", log); },[log,mounted]);
 
   const P = {
     high:   { color: config.primaryColor, soft: hexToSoft(config.primaryColor), label: config.priorityLabels.high },
@@ -125,7 +124,6 @@ export default function FluidWeek() {
   return (
     <div style={{ fontFamily:ff, color:"#1C1C1E", background:"#FAFAF9", minHeight:"100vh", opacity:mounted?1:0, transition:"opacity 0.3s" }}>
 
-      {/* CUSTOMIZE MODAL */}
       {editing && (
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
           <div style={{ background:"#fff", borderRadius:20, width:"100%", maxWidth:560, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 32px 80px rgba(0,0,0,0.2)" }}>
@@ -133,7 +131,6 @@ export default function FluidWeek() {
               <div style={{ fontFamily:fs, fontSize:22, fontWeight:600, marginBottom:4 }}>Customize Your Planner</div>
               <div style={{ fontSize:12, color:"#999", marginBottom:20 }}>Make it yours.</div>
 
-              {/* Presets */}
               <div style={{ marginBottom:20 }}>
                 <div style={{ fontSize:11, fontWeight:600, color:"#555", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.4px" }}>Start from a template</div>
                 <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
@@ -150,7 +147,6 @@ export default function FluidWeek() {
 
               <div style={{ height:1, background:"#F0F0F0", marginBottom:20 }} />
 
-              {/* Cover image */}
               <div style={{ marginBottom:20 }}>
                 <div style={{ fontSize:11, fontWeight:600, color:"#555", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.4px" }}>Cover / Thumbnail</div>
                 <div style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
@@ -173,7 +169,6 @@ export default function FluidWeek() {
                 </div>
               </div>
 
-              {/* Logo */}
               <div style={{ marginBottom:20 }}>
                 <div style={{ fontSize:11, fontWeight:600, color:"#555", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.4px" }}>Logo</div>
                 <div style={{ display:"flex", gap:12, alignItems:"center" }}>
@@ -190,7 +185,6 @@ export default function FluidWeek() {
                 </div>
               </div>
 
-              {/* Title & brand */}
               <div style={{ display:"flex", gap:12, marginBottom:16 }}>
                 <div style={{ flex:1 }}>
                   <div style={{ fontSize:11, fontWeight:600, color:"#555", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.4px" }}>App Title</div>
@@ -210,7 +204,6 @@ export default function FluidWeek() {
                   style={{ width:"100%", padding:"9px 12px", borderRadius:8, border:"1.5px solid #E5E5E5", fontFamily:ff, fontSize:13 }} />
               </div>
 
-              {/* Colors */}
               <div style={{ display:"flex", gap:12, marginBottom:16 }}>
                 {[["primaryColor","Primary Color"],["accentColor","Accent Color"]].map(([field,label])=>(
                   <div key={field} style={{ flex:1 }}>
@@ -225,7 +218,6 @@ export default function FluidWeek() {
                 ))}
               </div>
 
-              {/* Priority labels */}
               <div style={{ marginBottom:20 }}>
                 <div style={{ fontSize:11, fontWeight:600, color:"#555", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.4px" }}>Priority Labels</div>
                 <div style={{ display:"flex", gap:8 }}>
@@ -239,7 +231,6 @@ export default function FluidWeek() {
                 </div>
               </div>
 
-              {/* Live preview */}
               <div style={{ background:hexToSoft(draft.primaryColor), borderRadius:10, padding:"14px 16px", marginBottom:20, border:`1.5px solid ${draft.primaryColor}22` }}>
                 <div style={{ fontSize:10, color:"#999", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.5px" }}>Live Preview</div>
                 <div style={{ display:"flex", gap:12, alignItems:"center" }}>
@@ -269,7 +260,6 @@ export default function FluidWeek() {
         </div>
       )}
 
-      {/* HEADER */}
       <div style={{ background:"#fff", borderBottom:"1px solid #EBEBEB" }}>
         <div style={{ padding:"18px 32px 0" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
@@ -313,7 +303,6 @@ export default function FluidWeek() {
         </div>
       </div>
 
-      {/* BODY */}
       <div style={{ padding:"24px 32px" }}>
         <button onClick={()=>setAdding(a=>!a)} style={{ display:"flex", alignItems:"center", gap:6, padding:"8px 16px", background:config.primaryColor, color:"#fff", border:"none", borderRadius:8, fontSize:12, fontWeight:500, cursor:"pointer", fontFamily:ff, marginBottom:18 }}>
           <span style={{ fontSize:16 }}>+</span> Add commitment
@@ -337,7 +326,6 @@ export default function FluidWeek() {
           </div>
         )}
 
-        {/* WEEK VIEW */}
         {tab==="week" && (
           <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:10 }}>
             {DAYS.map((day,di)=>(
@@ -365,7 +353,6 @@ export default function FluidWeek() {
           </div>
         )}
 
-        {/* POOL VIEW */}
         {tab==="pool" && (
           <div>
             <div style={{ fontSize:12, color:"#999", marginBottom:20 }}>Everything in one place — nothing gets lost when you reschedule.</div>
@@ -392,7 +379,6 @@ export default function FluidWeek() {
           </div>
         )}
 
-        {/* LOG VIEW */}
         {tab==="log" && (
           <div>
             <div style={{ fontSize:12, color:"#999", marginBottom:20 }}>Every reschedule recorded — nothing quietly disappears.</div>
